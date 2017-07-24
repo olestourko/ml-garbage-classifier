@@ -18,7 +18,7 @@ def cost(X, y, theta):
     :param X: i by j matrix of training features
     :param y: i by 1 matrix of training results
     :param theta: 1 by j matrix of thetas
-    :return:
+    :return: the total cost for the particular theta
     """
     # the number of training examples
     m = shape(X)[0]
@@ -30,8 +30,9 @@ def cost(X, y, theta):
         -
         (1.0 - y) * log(1.0 - hypothesis)
     )
+    gradients = (1.0 / m) * ((hypothesis.transpose() - y.transpose()).dot(X))
 
-    return j
+    return j, gradients
 
 
 if __name__ == "__main__":
@@ -39,4 +40,4 @@ if __name__ == "__main__":
     y = array([[1], [1]])
     theta = array([[1, 1, 1]]).transpose()
 
-    cost(X, y, theta)
+    j, gradients = cost(X, y, theta)
