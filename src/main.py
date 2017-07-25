@@ -14,11 +14,11 @@ def sigmoid(z):
 
 def cost(X, y, theta):
     """
-
+    Computes cost and gradients for a data set
     :param X: i by j matrix of training features
     :param y: i by 1 matrix of training results
     :param theta: 1 by j matrix of thetas
-    :return: the total cost for the particular theta
+    :return: the total cost for the particular theta and the gradients
     """
     # the number of training examples
     m = shape(X)[0]
@@ -34,6 +34,17 @@ def cost(X, y, theta):
 
     return j, gradients
 
+def minimize(X, y, initial_theta, alpha, iterations):
+    """
+
+    :param X: i by j matrix of training features
+    :param y: i by 1 matrix of training results
+    :param initial_theta: 1 by j matrix of thetas
+    :param alpha: learning rate (smaller == slower, but it can't be too large because gradient descent will break
+    :param iterations: the number of gradient descent iteration
+    :return: thetas found through gradient descent
+    """
+    pass
 
 if __name__ == "__main__":
     X = array([[1, 1, 1], [1, 1, 1]])
