@@ -12,7 +12,7 @@ def sigmoid(z):
     return 1 / (1 + (e ** -z))
 
 
-def cost(X, y, theta):
+def logisticCostFunction(X, y, theta):
     """
     Computes cost and gradients for a data set
     :param X: i by j matrix of training features
@@ -31,7 +31,6 @@ def cost(X, y, theta):
         (1.0 - y) * log(1.0 - hypothesis)
     )
     gradients = (1.0 / m) * ((hypothesis.transpose() - y.transpose()).dot(X))
-
     return j, gradients
 
 def minimize(X, y, initial_theta, alpha, iterations):
@@ -42,13 +41,23 @@ def minimize(X, y, initial_theta, alpha, iterations):
     :param initial_theta: 1 by j matrix of thetas
     :param alpha: learning rate (smaller == slower, but it can't be too large because gradient descent will break
     :param iterations: the number of gradient descent iteration
-    :return: thetas found through gradient descent
+    :return: thetas found through gradient descent and cost at each iteration
     """
-    pass
+
+    costs = []
+    theta = initial_theta[:]
+    hypothesis = sigmoid(X.dot(theta))
+
+    for i in range(0, iterations):
+        cost, gradients = logisticCostFunction(X, y, theta)
+        costs.append(cost)
+        theta -= alpha * gradients.transpose() #subtract the derivative of the cost function from the current theta(s)
+
+    return theta, costs
 
 if __name__ == "__main__":
     X = array([[1, 1, 1], [1, 1, 1]])
     y = array([[1], [1]])
     theta = array([[1, 1, 1]]).transpose()
 
-    j, gradients = cost(X, y, theta)
+    j, gradients = logisticCostFunction(X, y, theta)
