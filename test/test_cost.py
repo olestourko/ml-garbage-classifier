@@ -1,7 +1,7 @@
 import unittest
 import numpy
 from numpy import *
-from src.main import cost
+from src.main import logisticCostFunction
 
 
 class TestCost(unittest.TestCase):
@@ -12,12 +12,12 @@ class TestCost(unittest.TestCase):
         self.theta = array([[1, 1, 1]]).transpose()
 
     def test_cost(self):
-        j, gradients = cost(self.X, self.y, self.theta)
+        j, gradients = logisticCostFunction(self.X, self.y, self.theta)
         expected = 0.048587
         numpy.testing.assert_almost_equal(expected, j, 5)
 
     def test_gradients(self):
-        j, gradients = cost(self.X, self.y, self.theta)
+        j, gradients = logisticCostFunction(self.X, self.y, self.theta)
         expected = array([[-0.047426, -0.047426, -0.047426]])
         numpy.testing.assert_almost_equal(expected, gradients, 5)
 
