@@ -1,4 +1,5 @@
 from math import *
+import numpy
 from numpy import *
 from numpy import log as log
 
@@ -11,6 +12,8 @@ def sigmoid(z):
     """
     return 1 / (1 + (e ** -z))
 
+def predict(X, theta):
+    return numpy.round(sigmoid(X.dot(theta)))
 
 def logisticCostFunction(X, y, theta):
     """
@@ -46,7 +49,6 @@ def minimize(X, y, initial_theta, alpha, iterations):
 
     costs = []
     theta = initial_theta[:]
-    hypothesis = sigmoid(X.dot(theta))
 
     for i in range(0, iterations):
         cost, gradients = logisticCostFunction(X, y, theta)

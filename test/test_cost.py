@@ -1,7 +1,7 @@
 import unittest
 import numpy
 from numpy import *
-from src.main import logisticCostFunction
+from src.core import logisticCostFunction
 
 
 class TestCost(unittest.TestCase):

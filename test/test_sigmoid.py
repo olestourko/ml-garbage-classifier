@@ -1,7 +1,7 @@
 import unittest
 import numpy
 from numpy import *
-from src.main import sigmoid
+from src.core import sigmoid
 
 
 class TestSigmoid(unittest.TestCase):
