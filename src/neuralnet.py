@@ -2,9 +2,8 @@ from src.core import sigmoid
 import numpy
 
 class NeuralNet:
-    layers = []
-
     def __init__(self):
+        self.layers = []
         pass
 
     def add_layer(self, size):
@@ -28,7 +27,7 @@ class NeuralNet:
 
         # There is no need to run the activation function on the input layer; its just the raw features
         previous_activation = X_with_bias
-        for i in range(1, len(self.layers)):
+        for i in range(1, len(self.layers) + 1):
             z = previous_activation.dot(theta[i - 1].transpose())
             activation = sigmoid(z)
             activations.append(activation)
