@@ -1,6 +1,6 @@
-from math import *
+from math import e
 import numpy
-from numpy import *
+from numpy import shape, array
 from numpy import log as log
 
 
@@ -56,6 +56,24 @@ def minimize(X, y, initial_theta, alpha, iterations):
         theta -= alpha * gradients.transpose() #subtract the derivative of the cost function from the current theta(s)
 
     return theta, costs
+
+def randomly_initiate_theta(theta, epsilon):
+    """
+
+    :param theta: A numpy array or list of numpy arrays where the thetas will go
+    :param epsilon: The range in which to generate thetas. theta(i, j) in epsilon < 0 < epsilon
+    :return: the randomly initialized thetas
+    """
+
+    if isinstance(theta, list):
+        random_theta = theta[:]
+    else:
+        random_theta = [numpy.copy(theta)]
+
+    for i, t in enumerate(random_theta):
+        random_theta[i] = numpy.random.uniform(-epsilon, epsilon, shape(t))
+
+    return random_theta
 
 if __name__ == "__main__":
     X = array([[1, 1, 1], [1, 1, 1]])

@@ -1,6 +1,7 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
+from src.core import *
 from src.neuralnet import *
 import numpy
 from numpy import shape, ones
@@ -20,12 +21,15 @@ theta_with_bias = [
     ones([1, 6])
 ]
 
+# Randomly initialize thetas
+random_theta = randomly_initiate_theta(theta_with_bias, 1)
+
 # Initialize a neural network
 nn = NeuralNet()
 nn.add_layer(3) # input layer
 nn.add_layer(6) # hidden layer layer
 nn.add_layer(1) # output layer
-activations = nn.forward_propagate(X, theta_with_bias)
+activations = nn.forward_propagate(X, random_theta)
 
 print("Number of activations: {}".format(len(activations)))
 for i, activation in enumerate(activations):
