@@ -19,7 +19,7 @@ class NeuralNet:
 
         :param X: A numpy array of input features. This does not include the bias feature.
         :param theta: A list of thetas for each layer, including a theta for the bias node.
-        :return:
+        :return: The activations for every layer
         """
         activations = []
         m = numpy.shape(X)[0]
@@ -37,5 +37,25 @@ class NeuralNet:
         return activations
 
 
-    def backward_propagate(self):
-        pass
+    def backward_propagate(self, X, Y, theta):
+        """
+
+        :param X: A numpy array of input features. This does not include the bias feature.
+        :param Y: A numpy array of training results.
+        :param theta: A list of thetas for each layer, including a theta for the bias node.
+        :return:
+        """
+        activations = self.forward_propagate(X, theta)
+
+        errors = {}
+        for i, layer_size in reversed(list(enumerate(self.layers))):
+            if i == len(self.layers) - 1:
+                errors[i] = activations[i] - Y
+                # Compute the first error term
+                pass
+            else:
+                this_layers_theta = theta[i + 1]
+                # print(i)
+                # print(errors[i + 1].dot(this_layers_theta))
+                sigmoid_derivative = ((activations[i] * (1 - activations[i])))
+                errors[i] = (errors[i + 1].dot(this_layers_theta)) * sigmoid_derivative
