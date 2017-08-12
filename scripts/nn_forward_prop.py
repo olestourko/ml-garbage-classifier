@@ -25,7 +25,7 @@ theta_with_bias = [
 random_theta = randomly_initiate_theta(theta_with_bias, 1)
 
 # Initialize a neural network
-nn = NeuralNet()
+nn = NeuralNet(n)
 nn.add_layer(3) # input layer
 nn.add_layer(6) # hidden layer layer
 nn.add_layer(1) # output layer

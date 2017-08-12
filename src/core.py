@@ -36,9 +36,10 @@ def logisticCostFunction(X, y, theta):
     gradients = (1.0 / m) * ((hypothesis.transpose() - y.transpose()).dot(X))
     return j, gradients
 
-def minimize(X, y, initial_theta, alpha, iterations):
+def minimize(cost_function, X, y, initial_theta, alpha, iterations):
     """
 
+    :param cost_function: the cost function to minimize. It returns the cost and gradients.
     :param X: i by j matrix of training features
     :param y: i by 1 matrix of training results
     :param initial_theta: 1 by j matrix of thetas
@@ -51,7 +52,7 @@ def minimize(X, y, initial_theta, alpha, iterations):
     theta = initial_theta[:]
 
     for i in range(0, iterations):
-        cost, gradients = logisticCostFunction(X, y, theta)
+        cost, gradients = cost_function(X, y, theta)
         costs.append(cost)
         theta -= alpha * gradients.transpose() #subtract the derivative of the cost function from the current theta(s)
 
