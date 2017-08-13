@@ -15,11 +15,12 @@ def sigmoid(z):
 def predict(X, theta):
     return numpy.round(sigmoid(X.dot(theta)))
 
-def logisticCostFunction(X, y, theta):
+def logisticCostFunction(X, y, rlambda, theta):
     """
     Computes cost and gradients for a data set
     :param X: i by j matrix of training features
     :param y: i by 1 matrix of training results
+    :param rlambda: the regularization constant
     :param theta: 1 by j matrix of thetas
     :return: the total cost for the particular theta and the gradients
     """
@@ -33,10 +34,13 @@ def logisticCostFunction(X, y, theta):
         -
         (1.0 - y) * log(1.0 - hypothesis)
     )
+    # Add regularization
+    j += sum((rlambda / m) * theta)
+
     gradients = (1.0 / m) * ((hypothesis.transpose() - y.transpose()).dot(X))
     return j, gradients
 
-def minimize(cost_function, X, y, initial_theta, alpha, iterations):
+def minimize(cost_function, X, y, initial_theta, alpha, rlambda, iterations):
     """
 
     :param cost_function: the cost function to minimize. It returns the cost and gradients.
@@ -44,6 +48,7 @@ def minimize(cost_function, X, y, initial_theta, alpha, iterations):
     :param y: i by 1 matrix of training results
     :param initial_theta: 1 by j matrix of thetas
     :param alpha: learning rate (smaller == slower, but it can't be too large because gradient descent will break
+    :param rlambda: the regularization constant
     :param iterations: the number of gradient descent iteration
     :return: thetas found through gradient descent and cost at each iteration
     """
@@ -52,7 +57,7 @@ def minimize(cost_function, X, y, initial_theta, alpha, iterations):
     theta = initial_theta[:]
 
     for i in range(0, iterations):
-        cost, gradients = cost_function(X, y, theta)
+        cost, gradients = cost_function(X, y, rlambda, theta)
         costs.append(cost)
         theta -= alpha * gradients.transpose() #subtract the derivative of the cost function from the current theta(s)
 

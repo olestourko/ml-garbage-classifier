@@ -18,7 +18,7 @@ theta_with_bias = ones([1, n+1])
 
 # Train thetas
 n_iterations = 100
-trained_theta, costs = core.minimize(core.logisticCostFunction, X_with_bias, Y, theta_with_bias.transpose(), 0.5, n_iterations)
+trained_theta, costs = core.minimize(core.logisticCostFunction, X_with_bias, Y, theta_with_bias.transpose(), 0.5, 1, n_iterations)
 
 # Plot results
 import matplotlib.pyplot as plt

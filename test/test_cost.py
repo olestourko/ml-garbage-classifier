@@ -12,12 +12,12 @@ class TestCost(unittest.TestCase):
         self.theta = array([[1, 1, 1]]).transpose()
 
     def test_cost(self):
-        j, gradients = logisticCostFunction(self.X, self.y, self.theta)
+        j, gradients = logisticCostFunction(self.X, self.y, 0, self.theta) # Set rlmabda param to 0 to ignore regularization
         expected = 0.048587
         numpy.testing.assert_almost_equal(expected, j, 5)
 
     def test_gradients(self):
-        j, gradients = logisticCostFunction(self.X, self.y, self.theta)
+        j, gradients = logisticCostFunction(self.X, self.y, 0, self.theta) # Set rlmabda param to 0 to ignore regularization
         expected = array([[-0.047426, -0.047426, -0.047426]])
         numpy.testing.assert_almost_equal(expected, gradients, 5)
 
