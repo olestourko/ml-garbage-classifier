@@ -40,9 +40,9 @@ for key, value in enumerate(random_theta):
     unrolled_theta.extend(numpy.ravel(value).tolist())
 
 # Train the neural network
-alpha = 0.001 # Gradient descent constant
-rlambda = 0.25 # Regularization constant
-n_iterations = 5000000
+alpha = 0.0001 # Gradient descent constant
+rlambda = 0.0 # Regularization constant
+n_iterations = 200000
 trained_theta, costs = minimize(nn.backward_propagate, X, Y, unrolled_theta, alpha, rlambda, n_iterations)
 results = nn.predict(X, trained_theta)
 
@@ -79,8 +79,11 @@ for i in range(0, m):
     else:
         R_negative = numpy.vstack((X[i, :2], R_negative))
 
-axarr[2].plot(R_positive[:, 0], R_positive[:, 1], 'go')
-axarr[2].plot(R_negative[:, 0], R_negative[:, 1], 'ro')
+if len(numpy.shape(R_positive)) == 2:
+    axarr[2].plot(R_positive[:, 0], R_positive[:, 1], 'go')
+
+if len(numpy.shape(R_negative)) == 2:
+    axarr[2].plot(R_negative[:, 0], R_negative[:, 1], 'ro')
 axarr[2].set_title('Predictions')
 axarr[2].set_xlabel('x1')
 axarr[2].set_ylabel('x2')

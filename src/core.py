@@ -57,14 +57,33 @@ def minimize(cost_function, X, y, initial_theta, alpha, rlambda, iterations):
     :return: thetas found through gradient descent and cost at each iteration
     """
 
+    initial_alpha = alpha
     costs = []
     theta = initial_theta[:]
 
+    n_increased_alpha = 0;
+    n_decreased_alpha = 0;
+
     for i in range(0, iterations):
         cost, gradients = cost_function(X, y, rlambda, theta)
+
+        # Dynamically adjust the learning rate
+        if i > 0:
+            if costs[i - 1] > cost:
+                # Gradient descent is converging
+                alpha += initial_alpha
+                n_increased_alpha += 1
+            else:
+                # Gradient descent is diverging
+                alpha = max([initial_alpha, alpha / 2.0])
+                # cost, gradients = cost_function(X, y, rlambda, theta) # Recompute cost and gradients
+                n_decreased_alpha += 1
+
         theta -= alpha * gradients.transpose() #subtract the derivative of the cost function from the current theta(s)
         costs.append(cost)
 
+    # print(n_increased_alpha)
+    # print(n_decreased_alpha)
     return theta, costs
 
 def randomly_initiate_theta(theta, epsilon):
@@ -84,10 +103,3 @@ def randomly_initiate_theta(theta, epsilon):
         random_theta[i] = numpy.random.uniform(-epsilon, epsilon, shape(t))
 
     return random_theta
-
-if __name__ == "__main__":
-    X = array([[1, 1, 1], [1, 1, 1]])
-    y = array([[1], [1]])
-    theta = array([[1, 1, 1]]).transpose()
-
-    j, gradients = logisticCostFunction(X, y, theta)
