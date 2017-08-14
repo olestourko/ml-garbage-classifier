@@ -10,12 +10,12 @@ def sigmoid(z):
     :param z: A scalar or matrix hypothesis
     :return: the hypothesis run through the sigmoid function
     """
-    return 1 / (1 + (e ** -z))
+    return 1.0 / (1.0 + (e ** -z))
 
 def predict(X, theta):
     return numpy.round(sigmoid(X.dot(theta)))
 
-def logisticCostFunction(X, y, rlambda, theta):
+def logisticCostFunction(X, Y, rlambda, theta):
     """
     Computes cost and gradients for a data set
     :param X: i by j matrix of training features
@@ -30,14 +30,18 @@ def logisticCostFunction(X, y, rlambda, theta):
 
     # https://www.coursera.org/learn/machine-learning/lecture/1XG8G/cost-function
     j = (1.0 / m) * sum(
-        - y * log(hypothesis)
+        -Y * log(hypothesis)
         -
-        (1.0 - y) * log(1.0 - hypothesis)
+        (1.0 - Y) * log(1.0 - hypothesis)
     )
     # Add regularization
     j += sum((rlambda / m) * theta)
 
-    gradients = (1.0 / m) * ((hypothesis.transpose() - y.transpose()).dot(X))
+    # Get gradients
+    gradients = (1.0 / m) * (hypothesis - Y).transpose().dot(X)
+    theta_for_regularization = theta[:]
+    gradients += (rlambda / m) * theta_for_regularization.transpose()
+
     return j, gradients
 
 def minimize(cost_function, X, y, initial_theta, alpha, rlambda, iterations):
@@ -58,8 +62,8 @@ def minimize(cost_function, X, y, initial_theta, alpha, rlambda, iterations):
 
     for i in range(0, iterations):
         cost, gradients = cost_function(X, y, rlambda, theta)
-        costs.append(cost)
         theta -= alpha * gradients.transpose() #subtract the derivative of the cost function from the current theta(s)
+        costs.append(cost)
 
     return theta, costs
 

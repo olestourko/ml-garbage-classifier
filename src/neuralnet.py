@@ -23,7 +23,7 @@ class NeuralNet:
         """
 
         :param X: A numpy array of input features. This does not include the bias feature.
-        :param theta: A list of thetas for each layer, including a theta for the bias node.
+        :param theta: A list of (rolled) thetas for each layer, including a theta for the bias node.
         :return: The activations for every layer
         """
         activations = []
@@ -42,14 +42,26 @@ class NeuralNet:
 
         return activations
 
-
-    def backward_propagate(self, X, Y, theta, lambda_reg):
+    def predict(self, X, theta):
         """
+        Make a prediction using trained thetas.
+        This function is basically a wrapper for forward_propagate.
+
+        :param X: A numpy array of input features. This does not include the bias feature.
+        :param theta: A flat list of thetas, including bias nodes.
+        :return: A numpy array of predictions.
+        """
+        theta = self.roll_thetas(theta)
+        return numpy.round(self.forward_propagate(X, theta)[-1])
+
+    def backward_propagate(self, X, Y, rlambda, theta):
+        """
+        Backpropagation is basically a neural net's cost function.
 
         :param X: A numpy array of input features. This does not include the bias feature.
         :param Y: A numpy array of training results.
-        :param theta: A flat list of thetas, including bias nodes
-        :param lambda_reg: A scalar which controls the regularization weight in the cost function
+        :param theta: A flat list of thetas, including bias nodes.
+        :param rlambda: A scalar which controls the regularization weight in the cost function.
         :return: the total cost for the particular theta and the gradients (unrolled)
         """
         m = numpy.shape(X)[0]
@@ -75,7 +87,7 @@ class NeuralNet:
                 accumulators[i] = activations[i].transpose().dot(errors[i+1])
 
                 # Regularization
-                regularization_term = lambda_reg * this_layers_theta
+                regularization_term = (rlambda / m) * this_layers_theta
                 regularization_term[:, 0] = 0 # Don't regularize the bias terms
 
                 gradients[i] = ((1.0 / m) * accumulators[i]) + regularization_term.transpose()
@@ -85,7 +97,7 @@ class NeuralNet:
         for key, value in gradients.items():
             unrolled_gradients.extend(numpy.ravel(value).tolist())
 
-        return j, unrolled_gradients
+        return j, numpy.asarray(unrolled_gradients)
 
     def roll_thetas(self, theta):
         """
