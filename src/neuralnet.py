@@ -1,4 +1,4 @@
-from src.core import sigmoid
+from src.core import sigmoid, sigmoid_derivative
 import numpy
 
 class NeuralNet:
@@ -82,8 +82,8 @@ class NeuralNet:
             else:
                 # Computer error terms
                 this_layers_theta = theta[i]
-                sigmoid_derivative = ((activations[i] * (1 - activations[i])))
-                errors[i] = (errors[i + 1].dot(this_layers_theta)) * sigmoid_derivative
+                d_sigmoid = sigmoid_derivative(activations[i])
+                errors[i] = (errors[i + 1].dot(this_layers_theta)) * d_sigmoid
                 accumulators[i] = activations[i].transpose().dot(errors[i+1])
 
                 # Regularization

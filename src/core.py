@@ -12,6 +12,14 @@ def sigmoid(z):
     """
     return 1.0 / (1.0 + (e ** -z))
 
+def sigmoid_derivative(sigmoid_output):
+    """
+    :param z: A scalar or matrix hypothesis, should be the output of a sigmoid call
+    :return:
+    """
+    s = sigmoid(sigmoid_output)
+    return s * (1.0 - s)
+
 def predict(X, theta):
     return numpy.round(sigmoid(X.dot(theta)))
 
@@ -103,3 +111,12 @@ def randomly_initiate_theta(theta, epsilon):
         random_theta[i] = numpy.random.uniform(-epsilon, epsilon, shape(t))
 
     return random_theta
+
+def randomly_intiate_theta_rolled(n, epsilon):
+    """
+
+    :param n: The length of the rolled theta list
+    :param epsilon: The range in which to generate thetas. theta(i, j) in epsilon < 0 < epsilon
+    :return: The randomly initialized thetas
+    """
+    return [numpy.random.uniform(-epsilon, epsilon) for i in range(0, n)]

@@ -20,15 +20,16 @@ n = shape(X)[1] # number of features
 
 bias_features = numpy.ones([m, 1])
 X_with_bias = numpy.concatenate((bias_features, X), axis=1)
+# theta_with_bias = randomly_intiate_theta_rolled(4, 1.0)
 theta_with_bias = [
-    ones([3, n+1]),
-    ones([1, 3]) # number of nodes, number of features. The bias node is added automatically after the first layer.
+    ones([1, n+1]),
+    # ones([1, 3]) # number of nodes, number of features. The bias node is added automatically after the first layer.
 ]
 
 # Initialize a neural network
 nn = NeuralNet(n)
 nn.add_layer(n+1) # input layer
-nn.add_layer(3) # hidden layer
+# nn.add_layer(3) # hidden layer
 nn.add_layer(1) # output layer
 
 # Randomly initialize thetas
@@ -42,7 +43,7 @@ for key, value in enumerate(random_theta):
 # Train the neural network
 alpha = 0.0001 # Gradient descent constant
 rlambda = 0.0 # Regularization constant
-n_iterations = 200000
+n_iterations = 50000
 trained_theta, costs = minimize(nn.backward_propagate, X, Y, unrolled_theta, alpha, rlambda, n_iterations)
 results = nn.predict(X, trained_theta)
 
