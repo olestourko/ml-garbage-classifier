@@ -17,8 +17,7 @@ def sigmoid_derivative(sigmoid_output):
     :param z: A scalar or matrix hypothesis, should be the output of a sigmoid call
     :return:
     """
-    s = sigmoid(sigmoid_output)
-    return s * (1.0 - s)
+    return sigmoid_output * (1.0 - sigmoid_output)
 
 def predict(X, theta):
     return numpy.round(sigmoid(X.dot(theta)))
