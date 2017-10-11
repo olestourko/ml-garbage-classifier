@@ -21,7 +21,7 @@ W, b = core.initiate_weights(n, 1, 1.0)
 learning_rate = 0.008
 iterations = 5000
 # costs, W, b = core.minimize_2(X, Y, W, b, learning_rate, iterations)
-costs, W, b = core.minimize_2_with_momentum(X, Y, W, b, learning_rate, 0.95, iterations)
+costs, W, b = core.minimize_2_with_momentum(X, Y, W, b, learning_rate, 0.9, iterations)
 results = core.predict_2(core.sigmoid, X, W, b).T
 
 """ Plot Results """

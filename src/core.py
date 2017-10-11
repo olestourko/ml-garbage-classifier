@@ -255,10 +255,13 @@ def minimize_2_with_momentum(X, Y, W, b, learning_rate, momentum_weight, iterati
     for i in range(0, iterations):
         j, dW, db = logistic_cost_function(sigmoid, X, Y, W, b)
         # These are the momentum terms (uses exponentially weighted averages)
-        # print(vdW.shape)
-        # print(dW.shape)
-        vdW = (momentum_weight * vdW) + ((1.0 - momentum_weight) * dW.T)
-        vdb = (momentum_weight * vdb) + ((1.0 - momentum_weight) * db.T)
+        if i == 0:
+            vdW = dW.T
+            vdb = db.T
+        else:
+            vdW = (momentum_weight * vdW) + ((1.0 - momentum_weight) * dW.T)
+            vdb = (momentum_weight * vdb) + ((1.0 - momentum_weight) * db.T)
+
         W -= (learning_rate * vdW)
         b -= (learning_rate * vdb)
         costs.append(j)
