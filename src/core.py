@@ -220,6 +220,51 @@ def minimize_2(X, Y, W, b, learning_rate, iterations):
 
     return costs, W, b
 
+def minimize_2_with_momentum(X, Y, W, b, learning_rate, momentum_weight, iterations):
+    """
+    https://www.coursera.org/learn/deep-neural-network/lecture/y0m1f/gradient-descent-with-momentum
+    https://devblogs.nvidia.com/parallelforall/deep-learning-nutshell-history-training/
+
+    :param X: Input features (n-1 x m matrix)
+    :param Y: Expected outputs (1 x m matrix)
+    :param W: Randomly initialized weights (n-1 x n matrix)
+    :param b: Bias term (1 x n matrix)
+    :param learning_rate:
+    :param momentum_weight: The lower, the lesser the effect of momentum. Default it to ~0.95
+    :param iterations:
+    :return: costs, W, b
+    """
+
+    # Do some sanity checks on the matrix sizes
+    n_minus_one = X.shape[0]
+    m = X.shape[1]
+    assert Y.shape[0] == 1
+    assert Y.shape[1] == m
+    assert W.shape[0] == n_minus_one
+    n = W.shape[1]
+    assert b.shape[0] == n
+    assert b.shape[1] == 1
+
+    costs = []
+    W = W.copy()
+    b = b.copy()
+    # momentum terms
+    vdW = numpy.zeros(W.shape)
+    vdb = numpy.zeros(b.shape)
+
+    for i in range(0, iterations):
+        j, dW, db = logistic_cost_function(sigmoid, X, Y, W, b)
+        # These are the momentum terms (uses exponentially weighted averages)
+        # print(vdW.shape)
+        # print(dW.shape)
+        vdW = (momentum_weight * vdW) + ((1.0 - momentum_weight) * dW.T)
+        vdb = (momentum_weight * vdb) + ((1.0 - momentum_weight) * db.T)
+        W -= (learning_rate * vdW)
+        b -= (learning_rate * vdb)
+        costs.append(j)
+
+    return costs, W, b
+
 def predict_2(activation_function, X, W, b):
     #return activation_function(calculate_z(X, W, b))
     return numpy.round(activation_function(calculate_z(X, W, b)))

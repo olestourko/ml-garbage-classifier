@@ -7,6 +7,10 @@ from numpy import shape, ones, zeros
 # Load data
 raw_data = numpy.loadtxt("../resources/ex2data1.txt", delimiter=',')
 X = raw_data[:, 0:2].T
+# Add an extra feature
+ratio_feature = X[0, :] / X[1, :]
+X = numpy.vstack((X, ratio_feature))
+
 Y = raw_data[:, -1:].T
 m = shape(X)[1] # number of training examples
 n = shape(X)[0]
@@ -14,9 +18,10 @@ n = shape(X)[0]
 W, b = core.initiate_weights(n, 1, 1.0)
 
 # Train weights
-learning_rate = 0.0001
+learning_rate = 0.008
 iterations = 5000
-costs, W, b = core.minimize_2(X, Y, W, b, learning_rate, iterations)
+# costs, W, b = core.minimize_2(X, Y, W, b, learning_rate, iterations)
+costs, W, b = core.minimize_2_with_momentum(X, Y, W, b, learning_rate, 0.95, iterations)
 results = core.predict_2(core.sigmoid, X, W, b).T
 
 """ Plot Results """
@@ -34,9 +39,9 @@ Y_positive = numpy.array((0, n))
 Y_negative = numpy.array((0, n))
 for i in range(0, m):
     if(Y.T[i]) == 1:
-        Y_positive = numpy.vstack((X.T[i, :n], Y_positive))
+        Y_positive = numpy.vstack((X.T[i, :2], Y_positive))
     else:
-        Y_negative = numpy.vstack((X.T[i, :n], Y_negative))
+        Y_negative = numpy.vstack((X.T[i, :2], Y_negative))
 
 axarr[1].plot(Y_positive[:, 0], Y_positive[:, 1], 'go')
 axarr[1].plot(Y_negative[:, 0], Y_negative[:, 1], 'ro')
@@ -49,9 +54,9 @@ R_positive = numpy.array((0, n))
 R_negative = numpy.array((0, n))
 for i in range(0, m):
     if(results[i]) == 1:
-        R_positive = numpy.vstack((X.T[i, :n], R_positive))
+        R_positive = numpy.vstack((X.T[i, :2], R_positive))
     else:
-        R_negative = numpy.vstack((X.T[i, :n], R_negative))
+        R_negative = numpy.vstack((X.T[i, :2], R_negative))
 
 if len(numpy.shape(R_positive)) == 2:
     axarr[2].plot(R_positive[:, 0], R_positive[:, 1], 'go')
