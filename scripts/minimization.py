@@ -15,7 +15,7 @@ Y = raw_data[:, -1:].T
 m = shape(X)[1] # number of training examples
 n = shape(X)[0]
 
-W, b = core.initiate_weights(n, 1, 1.0)
+W, b = core.initialize_weights(n, 1, 1.0)
 
 # Train weights
 learning_rate = 0.008

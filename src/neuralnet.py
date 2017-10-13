@@ -1,44 +1,35 @@
+import src.core as core
 from src.core import sigmoid, sigmoid_derivative
 import numpy
 
 class NeuralNet:
-    def __init__(self, input_features):
+    def __init__(self, layers):
         """
 
-        :param input_features: The number of input features, excluding the bias feature.
-        """
-        self.layers = []
-        self.input_features = input_features
-        pass
-
-    def add_layer(self, size):
+        :param layers: A list of layer sizes (Must have at least two elements: the input layer size and the output layer of 1)
         """
 
-        :param size: The size of the new layer
-        :return:
-        """
-        self.layers.append(size)
+        assert(len(layers)) >= 2
+        self.layers = layers
 
-    def forward_propagate(self, X, theta):
+    def forward_propagate(self, X, weights):
         """
 
-        :param X: A numpy array of input features. This does not include the bias feature.
-        :param theta: A list of (rolled) thetas for each layer, including a theta for the bias node.
-        :return: The activations for every layer
+        :param X: Input features (n x m matrix)
+        :param theta: A list of (W, b) tuples, one for each layer
+        :return: List of zs, list of activations
         """
-        activations = []
-        m = numpy.shape(X)[0]
-        X_with_bias = numpy.concatenate((numpy.ones([m, 1]), X), axis=1)
+        zs = []
+        activations = [X] # The inputs are the 0th activation
 
-        # There is no need to run the activation function on the input layer; its just the raw features
-        for i in range(0, len(self.layers)):
-            if i == 0:
-                activations.append(X_with_bias)
-            else:
-                z = activations[i - 1].dot(theta[i - 1].transpose())
-                activation = sigmoid(z)
-                numpy.concatenate((numpy.ones([m, 1]), activation), axis=1)
-                activations.append(activation)
+        for i in range(1, len(self.layers)): # Skip the 0th layer, since these are just the inputs
+            W = weights[i - 1][0]
+            b = weights[i - 1][1]
+            z = core.calculate_z(activations[i - 1], W, b)
+            a = core.sigmoid(z)
+
+            zs.append(z)
+            activations.append(a)
 
         return activations
 
@@ -123,3 +114,17 @@ class NeuralNet:
                 t += l
 
         return rolled_thetas
+
+    def initialize_weights(self):
+        """
+
+        :return: A list of W, b tuples (one tuple for each layer)
+        """
+        weights = []
+        for i in range(0, len(self.layers) - 1):
+            layer = self.layers[i]
+            next_layer = self.layers[i + 1]
+            W, b = core.initialize_weights(layer, next_layer, 1.0)
+            weights.append((W, b))
+
+        return weights
