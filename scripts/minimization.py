@@ -21,8 +21,19 @@ W, b = core.initialize_weights(n, 1, 1.0)
 learning_rate = 0.008
 iterations = 5000
 # costs, W, b = core.minimize_2(X, Y, W, b, learning_rate, iterations)
-costs, W, b = core.minimize_2_with_momentum(X, Y, W, b, learning_rate, 0.9, iterations)
-results = core.predict_2(core.sigmoid, X, W, b).T
+
+def activation_cost_function(X, Y, W, b):
+    z = core.calculate_z(X, W, b)
+    a = core.sigmoid(z)
+    j, dW, db = core.logistic_cost_function(X, a, Y)
+    return j, dW.T, db.T # Transposing the gradients because I changed the minimization functions to work with NNs
+
+costs, W, b = core.minimize_with_momentum(
+    activation_cost_function,
+    X, Y, W, b, learning_rate, 0.9, iterations
+)
+
+results = core.predict(core.sigmoid, X, W, b).T
 
 """ Plot Results """
 import matplotlib.pyplot as plt
