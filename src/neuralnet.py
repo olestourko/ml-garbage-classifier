@@ -84,13 +84,13 @@ class NeuralNet:
     def initialize_weights(self):
         """
 
-        :return: A list of W, b tuples (one tuple for each layer)
+        :return: A list of W, b dicts (one tuple for each layer)
         """
         weights = []
         for i in range(0, len(self.layers) - 1):
             layer = self.layers[i]
             next_layer = self.layers[i + 1]
-            W, b = core.initialize_weights(layer, next_layer, 1.0)
+            W, b = core.initialize_weights(layer, next_layer)
             weights.append({
                 "W": W,
                 "b": b

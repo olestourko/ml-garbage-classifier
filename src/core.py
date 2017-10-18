@@ -31,7 +31,7 @@ z: n x m
 a: n x m 
 """
 
-def initialize_weights(input_size, layer_size, epsilon):
+def initialize_weights(input_size, layer_size, epsilon=1.0):
     """
     Matrix dimensions:
     https://www.coursera.org/learn/neural-networks-deep-learning/lecture/Y20qP/explanation-for-vectorized-implementation
