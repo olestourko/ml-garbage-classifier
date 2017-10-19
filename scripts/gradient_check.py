@@ -10,7 +10,7 @@ random.seed(1)
 numpy.random.seed(1)
 
 """ Try flattening weights for simple logistic regression """
-W, b = core.initialize_weights(3, 1)
+W, b = core.initialize_weights(3, 1, 1.0)
 flattened_weights = gradient_check.weights_to_vector(W, b)
 
 W2, b2 = gradient_check.vector_to_weights(flattened_weights, 3, 1)

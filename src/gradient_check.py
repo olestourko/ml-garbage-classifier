@@ -76,7 +76,8 @@ def gradient_check_simple_logistic(X, Y, W, b, epsilon=1e-7):
     :param Y:
     :param W:
     :param b:
-    :param epsilon: The bump value used when numericall computing each derivative
+    :param epsilon: The bump value used when numerical
+     computing each derivative
     :return: dW, db
     """
 
@@ -125,4 +126,9 @@ def gradient_check_simple_logistic(X, Y, W, b, epsilon=1e-7):
     j, dW, db = activation_cost_function(X, Y, W, b)
     # Differentiated gradients
     dg_vector = weights_to_vector(dW, db)
-    return ncg_vector - dg_vector
+
+    diff = (
+        numpy.linalg.norm(dg_vector - ncg_vector) /
+        (numpy.linalg.norm(dg_vector) + numpy.linalg.norm(ncg_vector))
+    )
+    return diff
