@@ -69,11 +69,60 @@ def vector_to_nn_weights(v, layers):
 
     return weights
 
-"""
-def gradient_check_simple_logistic(X, Y, W, b, epsilon=10**(-6)):
+def gradient_check_simple_logistic(X, Y, W, b, epsilon=1e-7):
+    """
 
+    :param X:
+    :param Y:
+    :param W:
+    :param b:
+    :param epsilon: The bump value used when numericall computing each derivative
+    :return: dW, db
+    """
+
+    input_size = W.shape[0]
+    output_size = W.shape[1]
+    weight_vector = weights_to_vector(W, b)
+    """
+    Compute the gradients numerically
+    
+    https://www.coursera.org/learn/deep-neural-network/lecture/XzSSa/numerical-approximation-of-gradients
+    http://ufldl.stanford.edu/wiki/index.php/Gradient_checking_and_advanced_optimization
+    
+    Also worth checking out the steps for gradient checking in the Jupyter notebook
+    """
     def activate(X, W, b):
         z = core.calculate_z(X, W, b)
         a = core.sigmoid(z)
         return a
-"""
+
+    # Numerically computed gradients
+    ncg_vector = numpy.zeros(weight_vector.shape)
+
+    for i in range(0, weight_vector.shape[0]):
+        e = numpy.zeros(weight_vector.shape[0])
+        e[i] = epsilon
+        thetaplus = weight_vector + e
+        thetaminus = weight_vector - e
+        _W, _b = vector_to_weights(thetaplus, input_size, output_size)
+        a = activate(X, _W, _b)
+        jplus, _, _ = core.logistic_cost_function(X, a, Y)
+        _W, _b = vector_to_weights(thetaminus, input_size, output_size)
+        a = activate(X, _W, _b)
+        jminus, _, _ = core.logistic_cost_function(X, a, Y)
+        ncg_vector[i] = (jplus - jminus) / (2.0 * epsilon)
+
+    """
+    Compute the gradients using differentiation
+    """
+    def activation_cost_function(X, Y, W, b):
+        z = core.calculate_z(X, W, b)
+        a = core.sigmoid(z)
+        j, dW, db = core.logistic_cost_function(X, a, Y)
+        return j, dW.T, db.T  # Transposing the gradients because I changed the minimization functions to work with NNs
+
+
+    j, dW, db = activation_cost_function(X, Y, W, b)
+    # Differentiated gradients
+    dg_vector = weights_to_vector(dW, db)
+    return ncg_vector - dg_vector

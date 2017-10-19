@@ -3,16 +3,10 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 import src.core as core
 import numpy
 from numpy import shape, ones, zeros
+import data_loader
 
-# Load data
-raw_data = numpy.loadtxt("../resources/ex2data1.txt", delimiter=',')
-X = raw_data[:, 0:2].T
-# Add an extra feature
-ratio_feature = X[0, :] / X[1, :]
-X = numpy.vstack((X, ratio_feature))
-
-Y = raw_data[:, -1:].T
-m = shape(X)[1] # number of training examples
+X, Y = data_loader.get_sample_data()
+m = shape(X)[1]
 n = shape(X)[0]
 
 W, b = core.initialize_weights(n, 1, 1.0)

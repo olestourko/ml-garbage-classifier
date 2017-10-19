@@ -43,7 +43,7 @@ def initialize_weights(input_size, layer_size, epsilon=1.0):
     :return: (W, b)
     """
 
-    W = numpy.random.uniform(-epsilon, epsilon, (input_size, layer_size))
+    W = numpy.random.uniform(-epsilon / 2.0, epsilon / 2.0, (input_size, layer_size))
     b = numpy.zeros((layer_size, 1))
     return W, b
 
