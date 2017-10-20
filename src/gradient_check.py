@@ -122,10 +122,45 @@ def gradient_check_simple_logistic(X, Y, W, b, epsilon=1e-7):
         j, dW, db = core.logistic_cost_function(X, a, Y)
         return j, dW.T, db.T  # Transposing the gradients because I changed the minimization functions to work with NNs
 
-
-    j, dW, db = activation_cost_function(X, Y, W, b)
     # Differentiated gradients
+    j, dW, db = activation_cost_function(X, Y, W, b)
     dg_vector = weights_to_vector(dW, db)
+
+    diff = (
+        numpy.linalg.norm(dg_vector - ncg_vector) /
+        (numpy.linalg.norm(dg_vector) + numpy.linalg.norm(ncg_vector))
+    )
+    return diff
+
+def gradient_check_nn(nn, X, weights, Y, epsilon=1e-7):
+    weight_vector = nn_weights_to_vector(weights)
+
+    # Numerically computed gradients
+    ncg_vector = numpy.zeros(weight_vector.shape)
+
+    """
+    Compute the gradients numerically
+    """
+    for i in range(0, weight_vector.shape[0]):
+        e = numpy.zeros(weight_vector.shape[0])
+        e[i] = epsilon
+        thetaplus = weight_vector + e
+        thetaminus = weight_vector - e
+        _weights = vector_to_nn_weights(thetaplus, nn.layers)
+        activations, _ = nn.forward_propagate(X, _weights)
+        jplus, _, _ = core.logistic_cost_function(X, activations[-1], Y)
+        _weights = vector_to_nn_weights(thetaminus, nn.layers)
+        activations, _ = nn.forward_propagate(X, _weights)
+        jminus, _, _ = core.logistic_cost_function(X, activations[-1], Y)
+        ncg_vector[i] = (jplus - jminus) / (2.0 * epsilon)
+
+    """
+    Compute the gradients using differentiation
+    """
+    activations, zs = nn.forward_propagate(X, weights)
+    # Differentiated gradients
+    gradients = nn.backward_propagate(X, activations, zs, Y, weights)
+    dg_vector = nn_weights_to_vector(gradients)
 
     diff = (
         numpy.linalg.norm(dg_vector - ncg_vector) /

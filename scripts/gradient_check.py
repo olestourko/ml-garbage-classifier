@@ -19,10 +19,13 @@ W2, b2 = gradient_check.vector_to_weights(flattened_weights, 3, 1)
 nn = neuralnet.NeuralNet([3, 3, 1])
 nn_weights = nn.initialize_weights()
 flattened_nn_weights = gradient_check.nn_weights_to_vector(nn_weights)
-nn_weights_2 = gradient_check.vector_to_nn_weights(flattened_nn_weights, [3, 3, 1])
+nn_weights_2 = gradient_check.vector_to_nn_weights(flattened_nn_weights, nn.layers)
 
 """ Fetch the sample data """
 X, Y = data_loader.get_sample_data()
 
 """ Try gradient checking on simple logistic regression """
 diff = gradient_check.gradient_check_simple_logistic(X, Y, W, b)
+
+""" Try gradient checking on a neural network """
+nn_diff = gradient_check.gradient_check_nn(nn, X, nn_weights, Y)
