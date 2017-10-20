@@ -94,9 +94,9 @@ def logistic_cost_function(X, a, Y):
 
     return j, dW, db
 
-def minimize(activation_cost_function, X, Y, W, b, learning_rate, iterations):
+def minimize(activation_cost_function, X, Y, weights, learning_rate, iterations):
     """
-    :param activation_cost_function: Function which returns the cost and gradients (expects X, Y, W, b)
+    :param activation_cost_function: Function which returns the cost and (flattened) gradients (expects X, Y, W, b)
     Note: This function computes both the activation and the gradients
     :param cost_function: Function which returns the cost and gradients (expects X, a, Y)
     :param X: Input features (n-1 x m matrix)
@@ -119,21 +119,19 @@ def minimize(activation_cost_function, X, Y, W, b, learning_rate, iterations):
     # assert b.shape[1] == 1
 
     costs = []
-    W = W.copy()
-    b = b.copy()
+    weights = weights.copy()
 
     for i in range(0, iterations):
-        j, dW, db = activation_cost_function(X, Y, W, b)
+        j, gradients = activation_cost_function(X, Y, weights)
         """
         The notes use dW.T for simple logistic regression, but dW for neural networks.
         """
-        W -= (learning_rate * dW)
-        b -= (learning_rate * db)
+        weights -= (learning_rate * gradients)
         costs.append(j)
 
-    return costs, W, b
+    return costs, weights
 
-def minimize_with_momentum(activation_cost_function, X, Y, W, b, learning_rate, momentum_weight, iterations):
+def minimize_with_momentum(activation_cost_function, X, Y, weights, learning_rate, momentum_weight, iterations):
     """
     https://www.coursera.org/learn/deep-neural-network/lecture/y0m1f/gradient-descent-with-momentum
     https://devblogs.nvidia.com/parallelforall/deep-learning-nutshell-history-training/
@@ -151,27 +149,22 @@ def minimize_with_momentum(activation_cost_function, X, Y, W, b, learning_rate, 
     """
 
     costs = []
-    W = W.copy()
-    b = b.copy()
+    weights = weights.copy()
     # momentum terms
-    vdW = numpy.zeros(W.shape)
-    vdb = numpy.zeros(b.shape)
+    vGradients = numpy.zeros(weights.shape)
 
     for i in range(0, iterations):
-        j, dW, db = activation_cost_function(X, Y, W, b)
+        j, gradients = activation_cost_function(X, Y, weights)
         # These are the momentum terms (uses exponentially weighted averages)
         if i == 0:
-            vdW = dW
-            vdb = db
+            vWeights = weights
         else:
-            vdW = (momentum_weight * vdW) + ((1.0 - momentum_weight) * dW)
-            vdb = (momentum_weight * vdb) + ((1.0 - momentum_weight) * db)
+            vWeights = (momentum_weight * vWeights) + ((1.0 - momentum_weight) * gradients)
 
-        W -= (learning_rate * vdW)
-        b -= (learning_rate * vdb)
+        weights -= (learning_rate * vWeights)
         costs.append(j)
 
-    return costs, W, b
+    return costs, weights
 
 def predict(activation_function, X, W, b):
     return numpy.round(activation_function(calculate_z(X, W, b)))

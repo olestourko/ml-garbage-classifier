@@ -1,7 +1,9 @@
+from os import sys, path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 import numpy
 
 def get_sample_data():
-    raw_data = numpy.loadtxt("../resources/ex2data1.txt", delimiter=',')
+    raw_data = numpy.loadtxt(path.dirname(path.dirname(path.abspath(__file__))) + "/resources/ex2data1.txt", delimiter=',')
     X = raw_data[:, 0:2].T
     # Add an extra feature
     ratio_feature = X[0, :] / X[1, :]

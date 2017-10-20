@@ -60,11 +60,14 @@ class NeuralNet:
         gradients = []
         # The 1st layer is ignored (its just the input layer)
         for i in reversed(range(1, len(self.layers))):
+            print(i)
             if i == len(self.layers) - 1:
                 dz = activations[i] - Y
                 dW = (1.0 / m) * dz.dot(activations[i - 1].T)
                 db = (1.0 / m) * numpy.sum(dz, axis=1, keepdims=True)
             else:
+                print(weights[i])
+
                 prev_dz = dzs[i + 1]
                 z = zs[i]
                 W = weights[i]["W"]
@@ -97,57 +100,3 @@ class NeuralNet:
             })
 
         return weights
-
-def roll_weights(nn, weights):
-    """
-
-    :param nn: NeuralNetwork instance
-    :param W: List of W, tuples
-    :return: * x 1 matrix of W's, * x 1 matrix of b's
-    """
-    # 1. Determine rolled weight array sizes
-    W_size = 0
-    b_size = 0
-    for i in range(1, len(nn.layers)):
-        W_size += nn.layers[i - 1] * nn.layers[i]
-        b_size += nn.layers[i]
-
-    W_matrix = numpy.zeros((1, W_size))
-    b_matrix = numpy.zeros((1, b_size))
-
-    # 2. Roll the W's and b's
-    last_W_index = 0
-    last_b_index = 0
-    for i in range(1, len(nn.layers)):
-        W_size = nn.layers[i - 1] * nn.layers[i]
-        b_size = nn.layers[i]
-        W_matrix[0, last_W_index:last_W_index + W_size] = weights[i - 1]["W"].flatten()
-        b_matrix[0, last_b_index:last_b_index + b_size] = weights[i - 1]["b"].flatten()
-        last_W_index = W_size
-        last_b_index = b_size
-
-    return W_matrix, b_matrix
-
-def unroll_weights(nn, W, b):
-    """
-
-    :param nn: NeuralNetwork instance
-    :param W: * x 1 matrix
-    :param b: * x 1 matrix
-    :return: List of W, b tuples
-    """
-    weights = []
-
-    last_W_index = 0
-    last_b_index = 0
-    for i in range(1, len(nn.layers)):
-        W_size = nn.layers[i - 1] * nn.layers[i]
-        b_size = nn.layers[i]
-        weights.append({
-            "W": W[0, last_W_index:last_W_index + W_size].reshape(nn.layers[i - 1], nn.layers[i]),
-            "b": b[0, last_b_index:last_b_index + b_size].reshape((nn.layers[i], 1))
-        })
-        last_W_index = W_size
-        last_b_index = b_size
-
-    return weights

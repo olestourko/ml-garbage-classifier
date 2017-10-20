@@ -2,9 +2,14 @@ from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 import src.core as core
+import src.utils as utils
 import src.neuralnet as neuralnet
 import numpy
 from numpy import shape, ones
+import random
+
+random.seed(1)
+numpy.random.seed(1)
 
 # Load data
 raw_data = numpy.loadtxt("../resources/ex2data1.txt", delimiter=',')
@@ -19,25 +24,24 @@ n = shape(X)[0] # number of input features
 
 # Initialize a neural network
 # nn = neuralnet.NeuralNet([n, 1]) # This is the same as simple logistic regression
-nn = neuralnet.NeuralNet([n, 3, 1])
+nn = neuralnet.NeuralNet([n, 2, 1])
 # Randomly initialize weights
 weights = nn.initialize_weights()
 
-learning_rate = 0.001
-iterations = 50000
+learning_rate = 0.008
+iterations = 1
 
-def activation_cost_function(X, Y, W, b):
-    weights = neuralnet.unroll_weights(nn, W, b)
+def activation_cost_function(X, Y, weights_vector):
+    weights = utils.vector_to_nn_weights(weights_vector, nn.layers)
     activations, zs = nn.forward_propagate(X, weights)
     gradients = nn.backward_propagate(X, activations, zs, Y, weights)
-    dW_rolled, db_rolled = neuralnet.roll_weights(nn, gradients)
+    gradients = utils.nn_weights_to_vector(gradients)
     j, _, _ = core.logistic_cost_function(X, activations[-1], Y)
-    return j, dW_rolled, db_rolled
+    return j, gradients
 
-W, b = neuralnet.roll_weights(nn, weights)
-costs, W, b = core.minimize_with_momentum(activation_cost_function, X, Y, W, b, learning_rate, 0.9, iterations)
-# costs, W, b = core.minimize(activation_cost_function, X, Y, W, b, learning_rate, iterations)
-weights = neuralnet.unroll_weights(nn, W, b)
+weights_vector = utils.nn_weights_to_vector(weights)
+costs, weights_vector = core.minimize_with_momentum(activation_cost_function, X, Y, weights_vector, learning_rate, 0.9, iterations)
+weights = utils.vector_to_nn_weights(weights_vector, nn.layers)
 
 results = nn.predict(X, weights)
 

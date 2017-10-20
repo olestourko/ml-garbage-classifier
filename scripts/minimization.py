@@ -1,9 +1,14 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 import src.core as core
+import src.utils as utils
+import random
 import numpy
-from numpy import shape, ones, zeros
-import data_loader
+from numpy import shape
+from src import data_loader
+
+random.seed(1)
+numpy.random.seed(1)
 
 X, Y = data_loader.get_sample_data()
 m = shape(X)[1]
@@ -16,17 +21,24 @@ learning_rate = 0.008
 iterations = 5000
 # costs, W, b = core.minimize_2(X, Y, W, b, learning_rate, iterations)
 
-def activation_cost_function(X, Y, W, b):
+def activation_cost_function(X, Y, weights):
+    W, b = utils.vector_to_weights(weights, n, 1) # expand weights
     z = core.calculate_z(X, W, b)
     a = core.sigmoid(z)
     j, dW, db = core.logistic_cost_function(X, a, Y)
-    return j, dW.T, db.T # Transposing the gradients because I changed the minimization functions to work with NNs
+    """
+    Flatten gradients
+    Transposing them because I changed the minimization functions to work with NNs
+    """
+    gradients = utils.weights_to_vector(dW.T, db.T)
+    return j, gradients
 
-costs, W, b = core.minimize_with_momentum(
+weights = utils.weights_to_vector(W, b)
+costs, weights = core.minimize_with_momentum(
     activation_cost_function,
-    X, Y, W, b, learning_rate, 0.9, iterations
+    X, Y, weights, learning_rate, 0.9, iterations
 )
-
+W, b = utils.vector_to_weights(weights, n, 1)
 results = core.predict(core.sigmoid, X, W, b).T
 
 """ Plot Results """

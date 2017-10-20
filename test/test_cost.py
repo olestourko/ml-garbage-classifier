@@ -10,7 +10,7 @@ class TestCost(unittest.TestCase):
         self.X = array([[1, 1, 1], [1, 1, 1]]).T
         self.Y = array([[1, 1]])
         self.W = array([[1, 1, 1]]).T
-        self.b = 0
+        self.b = array([[0]])
 
     def test_cost(self):
         z = calculate_z(self.X, self.W, self.b)
@@ -18,15 +18,6 @@ class TestCost(unittest.TestCase):
         j, dW, db = logistic_cost_function(self.X, a, self.Y)
         expected = 0.048587
         numpy.testing.assert_almost_equal(j, expected, 5)
-
-    def test_gradients(self):
-        z = calculate_z(self.X, self.W, self.b)
-        a = sigmoid(z)
-        j, dW, db = logistic_cost_function(self.X, a, self.Y)
-        dW_expected = array([[-0.047426, -0.047426, -0.047426]])
-        db_expected = array([[-0.047426]])
-        numpy.testing.assert_almost_equal(dW_expected, dW, 5)
-        numpy.testing.assert_almost_equal(db_expected, db, 5)
 
 if __name__ == '__main__':
     unittest.main()
