@@ -37,10 +37,10 @@ def gradient_check_simple_logistic(X, Y, W, b, epsilon=1e-7):
         e = numpy.zeros(weight_vector.shape[0])
         e[i] = epsilon
         thetaplus = weight_vector + e
-        thetaminus = weight_vector - e
         _W, _b = utils.vector_to_weights(thetaplus, input_size, output_size)
         a = activate(X, _W, _b)
         jplus, _, _ = core.logistic_cost_function(X, a, Y)
+        thetaminus = weight_vector - e
         _W, _b = utils.vector_to_weights(thetaminus, input_size, output_size)
         a = activate(X, _W, _b)
         jminus, _, _ = core.logistic_cost_function(X, a, Y)
@@ -63,6 +63,7 @@ def gradient_check_simple_logistic(X, Y, W, b, epsilon=1e-7):
         numpy.linalg.norm(dg_vector - ncg_vector) /
         (numpy.linalg.norm(dg_vector) + numpy.linalg.norm(ncg_vector))
     )
+
     return diff
 
 def gradient_check_nn(nn, X, weights, Y, epsilon=1e-7):
@@ -94,6 +95,7 @@ def gradient_check_nn(nn, X, weights, Y, epsilon=1e-7):
     # Differentiated gradients
     gradients = nn.backward_propagate(X, activations, zs, Y, weights)
     dg_vector = utils.nn_weights_to_vector(gradients)
+    print(utils.vector_to_nn_weights(ncg_vector - dg_vector, nn.layers))
 
     diff = (
         numpy.linalg.norm(dg_vector - ncg_vector) /

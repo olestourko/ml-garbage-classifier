@@ -60,14 +60,11 @@ class NeuralNet:
         gradients = []
         # The 1st layer is ignored (its just the input layer)
         for i in reversed(range(1, len(self.layers))):
-            print(i)
             if i == len(self.layers) - 1:
                 dz = activations[i] - Y
                 dW = (1.0 / m) * dz.dot(activations[i - 1].T)
                 db = (1.0 / m) * numpy.sum(dz, axis=1, keepdims=True)
             else:
-                print(weights[i])
-
                 prev_dz = dzs[i + 1]
                 z = zs[i]
                 W = weights[i]["W"]
@@ -84,7 +81,7 @@ class NeuralNet:
 
         return list(reversed(gradients))
 
-    def initialize_weights(self):
+    def initialize_weights(self, epsilon=1.0):
         """
 
         :return: A list of W, b dicts (one tuple for each layer)
@@ -93,7 +90,7 @@ class NeuralNet:
         for i in range(0, len(self.layers) - 1):
             layer = self.layers[i]
             next_layer = self.layers[i + 1]
-            W, b = core.initialize_weights(layer, next_layer)
+            W, b = core.initialize_weights(layer, next_layer, epsilon)
             weights.append({
                 "W": W,
                 "b": b
